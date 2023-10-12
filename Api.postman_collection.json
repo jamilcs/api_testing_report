@@ -1,0 +1,214 @@
+{
+	"info": {
+		"_postman_id": "f4c3e1cf-82e3-452b-a246-618d761ca383",
+		"name": "Api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23792270"
+	},
+	"item": [
+		{
+			"name": "Post request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json()\r",
+							"pm.environment.set(\"Id\", jsonData.bookingid)\r",
+							"\r",
+							"var code = responseCode.code;\r",
+							"\r",
+							"switch(code){\r",
+							"    case 200:\r",
+							"\r",
+							"        pm.test(\"Status code is 200 pass\", function () {\r",
+							"        });\r",
+							"\r",
+							"        pm.test(\" The first name is Match\", function () {\r",
+							"         pm.expect(jsonData.booking.firstname).to.eql(\"Jim\");\r",
+							"        });\r",
+							"        pm.test(\"Date is match \", function () {\r",
+							"         pm.expect(jsonData.booking.bookingdates.checkin).to.eql(pm.environment.get(\"checki\"));\r",
+							"        });\r",
+							"        break;\r",
+							"    case 201:\r",
+							"        pm.test(\"Status code is 201 pass\", function () {\r",
+							"        });\r",
+							"        break;\r",
+							"    case 202:\r",
+							"        pm.test(\"Status code is 200 pass\", function () {\r",
+							"        });\r",
+							"        break;\r",
+							"    default:\r",
+							"        pm.test(\"The status code not found\", function () {\r",
+							"\r",
+							"        });\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const moment = require('moment')\r",
+							"const today = moment()\r",
+							"pm.environment.set('checkin',today.add(0,'day').format(\"YYYY-MM-DD\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"firstname\" : \"Jim\",\r\n\t\"lastname\" : \"Brown\",\r\n\t\"totalprice\" : 111,\r\n\t\"depositpaid\" : true,\r\n\t\"bookingdates\" : {\r\n    \t\"checkin\" : \"{{checkin}}\",\r\n    \t\"checkout\" : \"2019-01-01\"\r\n\t},\r\n\t\"additionalneeds\" : \"Breakfast\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/booking",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/booking/{{Id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"booking",
+						"{{Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "token={{Token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"firstname\" : \"German\",\r\n\t\"lastname\" : \"Brown\",\r\n\t\"totalprice\" : 1133,\r\n\t\"depositpaid\" : true,\r\n\t\"bookingdates\" : {\r\n    \t\"checkin\" : \"2018-01-01\",\r\n    \t\"checkout\" : \"2019-01-01\"\r\n\t},\r\n\t\"additionalneeds\" : \"Breakfast\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/booking/{{Id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"booking",
+						"{{Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json()\r",
+							"pm.environment.set(\"Token\",jsonData.token)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"username\": \"admin\",\r\n\t\"password\": \"password123\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Request",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Cookie",
+						"value": "token={{Token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/booking/{{Id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"booking",
+						"{{Id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
